@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "1007808003849",
+    "project_id": "shoppinglistduritaliv",
+    "storage_bucket": "shoppinglistduritaliv.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1007808003849:android:4a2372bb5cd6479e855dd8",
+        "android_client_info": {
+          "package_name": "com.shoppinglist"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1007808003849-d6au1ot5sf9fekn5karhkjpjv1j0k971.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBMRCEGdwEnfTa_3MezXRyEA0NEJSdEnf8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1007808003849-d6au1ot5sf9fekn5karhkjpjv1j0k971.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
