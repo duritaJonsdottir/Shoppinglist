@@ -7,6 +7,7 @@ import {
     StyleSheet,
     Text as RNText,
     useColorScheme,
+    Image,
     View
 } from 'react-native';
 
@@ -15,108 +16,38 @@ import { useState, useEffect } from 'react';
 import { Button, Pressable, Input, IconButton, Checkbox, Box, VStack, HStack, Heading, Text, Center, useToast, NativeBaseProvider } from "native-base";
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { Shoppinglist } from './Shoppinglist';
+import { db } from "../firebase/config.js";
 
-const recipies =
-{
-    "carbonara":
-        [
-            {
-                grocery: "bacon",
-                amount: 100,
-                unit: "g",
-            },
-            {
-                grocery: "milk",
-                amount: 1,
-                unit: "L",
-            },
-            {
-                grocery: "smør",
-                amount: 1,
-                unit: "tsk",
-            },
-            {
-                grocery: "løg, i tern",
-                amount: 1,
-                unit: "",
-            },
-            {
-                grocery: "piskefløde",
-                amount: 1,
-                unit: "dl",
-            },
-            {
-                grocery: "æg",
-                amount: 2,
-                unit: "",
-            },
-            {
-                grocery: "parmesan",
-                amount: 50,
-                unit: "g",
-            },
-            {
-                grocery: "sort peber, friskkværnet",
-                amount: null,
-                unit: "",
-            },
-        ],
-    "pasta kødsovs":
-        [
-            {
-                grocery: "bacon",
-                amount: 100,
-                unit: "g",
-                showList: false
-            },
-            {
-                grocery: "milk",
-                amount: 1,
-                unit: "L",
-                showList: false
-            },
-            {
-                grocery: "smør",
-                amount: 1,
-                unit: "tsk",
-                showList: false
-            },
-            {
-                grocery: "løg, i tern",
-                amount: 1,
-                unit: "",
-                showList: false
-            },
-            {
-                grocery: "piskefløde",
-                amount: 1,
-                unit: "dl",
-                showList: false
-            },
-            {
-                grocery: "æg",
-                amount: 2,
-                unit: "",
-                showList: false
-            },
-            {
-                grocery: "parmesan",
-                amount: 50,
-                unit: "g",
-                showList: false
-            },
-            {
-                grocery: "sort peber, friskkværnet",
-                amount: null,
-                unit: "",
-                showList: false
-            },
-        ],
-}
+
+
+
 const Recipies = (props) => {
+    const [recipe, setRecipe] = React.useState([]) 
+    useEffect(() => {// Runs when starting page up
+        // Load data
+        db.collection('user_recipes')
+            .doc(' PvybugXUxOtFxi2j5SMx') // My userid
+            .get()
+            .then(documentSnapshot => {
+                // const data = querySnapshot.docs.map((d) => ({ id: d.id, ...d.data() }))
+                console.log(documentSnapshot)
+                console.log(documentSnapshot.data())
+                setRecipe(documentSnapshot.data())
+                // setList(documentSnapshot.data()["shoplist"])
+            })
+            .catch(error => {
+                if (error instanceof TypeError) {
+                    return null;
+                }
+                throw error;
+            })
+
+    }, []);
+
+
     const Capitalize = (str: string) => {
         return str.charAt(0).toUpperCase() + str.slice(1);
-      }
+    }
 
 
     return (
@@ -126,18 +57,22 @@ const Recipies = (props) => {
                 <Center w="100%" >
                     <Box w="100%">
                         <Heading paddingLeft={"5%"} paddingBottom={5} mb="2" size="md" color="white">
-                            Recipies
+                            Recipes
                         </Heading>
                         <VStack space={4}>
-                            {Object.keys(recipies).map((key, index) => (
+                            {Object.keys(recipe).map((key, index) => (
                                 // <HStack alignItems={'flex-start'} color="white" >
                                 <View style={styles.boxStyle}>
                                     <HStack style={styles.container}>
-                                        <Box h="80%" w="20%">
-
+                                        <Box h="90%" w="30%">
+                                            <Image style={{
+                                                width: "100%",
+                                                height: "100%",
+                                                // resizeMode: 'contain'
+                                            }} source={require('../Images/bolognese-1.webp')} />
                                         </Box>
-                                        <Box h="80%" w="60%" style={styles.description}>
-                                            <Text fontSize={16}  fontWeight="bold" flexShrink={1} textAlign="left" mx="2" color="white" >
+                                        <Box h="80%" w="55%" style={styles.description}>
+                                            <Text fontSize={16} fontWeight="bold" flexShrink={1} textAlign="left" mx="2" color="white" >
                                                 {Capitalize(key)}
                                             </Text>
                                             <Text flexShrink={1} textAlign="left" mx="2" color="white" >
@@ -145,7 +80,7 @@ const Recipies = (props) => {
                                             </Text>
                                         </Box>
                                         <Box h="80%" w="20%" style={styles.some}>
-                                            <IconButton icon={<Icon name="plus" size={20} color="white" />} size="xs" onPress={() => props.addrecipieToList({[key] : recipies[key]})} colorScheme="white" />
+                                            <IconButton icon={<Icon name="plus" size={20} color="white" />} size="xs" onPress={() => props.addrecipieToList({ [key]: recipe[key]["Ingredients"] })} colorScheme="white" />
 
                                         </Box>
 
@@ -188,14 +123,15 @@ const styles = StyleSheet.create({
     container: {
         width: "100%",
         height: "100%",
-        padding: 20,
+        padding: "5%",
     },
-    some:{
+    some: {
         alignItems: 'center',
         justifyContent: 'center',
     },
-    description:{
+    description: {
         // alignItems: 'center',
+        paddingLeft:10,
         justifyContent: 'center',
     }
 });

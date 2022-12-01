@@ -10,9 +10,6 @@
 
 import React, { type PropsWithChildren } from 'react';
 import {
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
   StyleSheet,
   useColorScheme,
   View,
@@ -37,6 +34,113 @@ import { db } from "./firebase/config.js";
 const { convert } = require('convert');
 
 
+const Carbonara = {
+  "Description": "Some desc",
+  "Ingredients": [
+    {
+      grocery: "bacon",
+      amount: 100,
+      unit: "g",
+    },
+    {
+      grocery: "smør",
+      amount: 1,
+      unit: "tsk",
+    },
+    {
+      grocery: "løg, i tern",
+      amount: 1,
+      unit: "",
+    },
+    {
+      grocery: "piskefløde",
+      amount: 1,
+      unit: "dl",
+    },
+    {
+      grocery: "æg",
+      amount: 2,
+      unit: "",
+    },
+    {
+      grocery: "parmesan",
+      amount: 50,
+      unit: "g",
+    },
+    {
+      grocery: "sort peber, friskkværnet",
+      amount: null,
+      unit: "",
+    },
+  ]
+}
+
+const PastaBolognese = {
+  "Description": "Pasta bolo desc",
+  "Ingredients": [
+    {
+      grocery: "bacon",
+      amount: 50,
+      unit: "g"
+    },
+    {
+      grocery: "løg, finthakket",
+      amount: 2,
+      unit: ""
+    },
+    {
+      grocery: "fed hvidløg, finthakket",
+      amount: 2,
+      unit: ""
+    },
+    {
+      grocery: "stængler frisk timian, eller 2 tsk tørret",
+      amount: 3,
+      unit: ""
+    },
+    {
+      grocery: "hakket oksekød",
+      amount: 500,
+      unit: "g"
+    },
+    {
+      grocery: "rødvin",
+      amount: 1,
+      unit: "dl"
+    },
+    {
+      grocery: "soltørrede tomater, finthakket",
+      amount: 100,
+      unit: "g"
+    },
+    {
+      grocery: "rød balsamico",
+      amount: 2,
+      unit: "spsk"
+    },
+    {
+      grocery: "hakkede tomater",
+      amount: 2,
+      unit: "dåser"
+    },
+    {
+      grocery: "olivenolie",
+      amount: 2,
+      unit: "spsk"
+    },
+    {
+      grocery: "salt",
+      amount: null,
+      unit: ""
+    },
+    {
+      grocery: "sort peber, friskkværnet",
+      amount: null,
+      unit: ""
+    }
+  ]
+}
+
 const App = () => {
   const [selected, setSelected] = React.useState(1);
   const [recipies, setRecipies] = React.useState([]);
@@ -45,15 +149,14 @@ const App = () => {
   useEffect(() => {// When list changes, we update database
     // Update database
     db.collection('shoppinglist').doc('PvybugXUxOtFxi2j5SMx').set({ "recipies": recipies, "shoplist": list });
+
+    // This lines adds to firebase
+    // db.collection('user_recipes').doc(' PvybugXUxOtFxi2j5SMx').set({ "Carbonara": Carbonara, "Pasta Bolognese": PastaBolognese});
   }, [list]);
 
 
   useEffect(() => {// Runs when starting page up
     // Load data
-    //console.log(converter.mass(1).from('lb').to('oz').value)
-    console.log(convert(1, 'seconds').to('minutes'))
-    // console.log(db.collection("shoppinglist").doc('I9VH80v5RZE2z3KApD3m').get())
-
     db.collection('shoppinglist')
       .doc('PvybugXUxOtFxi2j5SMx') // My userid
       .get()
@@ -73,8 +176,8 @@ const App = () => {
 
 
   const addrecipieToList = (recipie) => {
-
-    let user = 'I9VH80v5RZE2z3KApD3m'
+    console.log(recipie)
+    // let user = 'I9VH80v5RZE2z3KApD3m'
     let recipiename = Object.keys(recipie)[0] // Get name of recipie
     console.log("recipiename")
     console.log(recipiename)
@@ -82,9 +185,10 @@ const App = () => {
     ////// Add all items //////
     for (var i = 0; i < recipie[recipiename].length; i++) {
       let res = recipie[recipiename][i]
+      console.log("res to add")
       console.log(res)
       res["recipie"] = recipiename
-      addItem(recipie[recipiename][i])
+      addItem(res)
     }
 
     ////// Update recipies //////
@@ -104,14 +208,14 @@ const App = () => {
     }
   }
 
-  
+
 
   const addItem = (groceryitem) => { // Add single item to list
-
+    let myList = [...list];
     // Check if grocery already exists in list
     const alredyexists: boolean = list.some(item => groceryitem.grocery.toLowerCase() === item.name.toLowerCase());
-    
 
+    console.log("It goes in here")
     // If grocery does not already exists in list, then add it to list
     if (alredyexists == false) {
       console.log("Grocery does not exist")
@@ -130,11 +234,13 @@ const App = () => {
       // We need to figure out how to join the existing value and the new added values
       console.log("Grocery does exist")
 
-      let index = list.findIndex(obj => obj.name.toLowerCase() === groceryitem.grocery.toLowerCase()) // Get the aready existing value
+      let index = myList.findIndex(obj => obj.name.toLowerCase() === groceryitem.grocery.toLowerCase()) // Get the aready existing value
 
       // Add new grocery to valslist
-      list[index].valList = list[index].valList.concat({ amount: parseInt(groceryitem.amount), unit: groceryitem.unit, recipie: groceryitem.recipie ? groceryitem.recipie : "" })
-
+      myList[index].valList = myList[index].valList.concat({ amount: parseInt(groceryitem.amount), unit: groceryitem.unit, recipie: groceryitem.recipie ? groceryitem.recipie : "" })
+      setList(myList)
+      console.log("What happens to myList??")
+      console.log(myList)
       // Then update the total amount and unit
       updateFromNewValslist(index)
     }
@@ -152,7 +258,7 @@ const App = () => {
 
     if (list.length > 0) {
       console.log("Updating list hihi")
-      
+
       if (index === null) { // If no specific index, then update all
         console.log("updateFromNewValslist for every index")
         for (var k = 0; k < myList.length; k++) {
@@ -224,7 +330,7 @@ const App = () => {
         }
         myList[index].amount = a
       }
-      
+
     }
     setList(myList)
 
@@ -235,7 +341,7 @@ const App = () => {
   return (
     <NativeBaseProvider >
 
-      {selected === 0 ? <Recipies addrecipieToList={addrecipieToList}/> : <Shoppinglist list={list} setList={setList} recipies={recipies} setRecipies={setRecipies} addrecipieToList={addrecipieToList} addItem={addItem}/>}
+      {selected === 0 ? <Recipies addrecipieToList={addrecipieToList} /> : <Shoppinglist list={list} setList={setList} recipies={recipies} setRecipies={setRecipies} addrecipieToList={addrecipieToList} addItem={addItem} />}
 
       <Box style={navBar.bottomContainer} bg="#13131A" safeAreaTop width="100%" maxW="500px" alignSelf="center">
         <HStack width="90%" alignSelf="center" style={{ marginBottom: 10, borderRadius: 40 }} bg="#1C1C24" alignItems="center" safeAreaBottom shadow={6}>

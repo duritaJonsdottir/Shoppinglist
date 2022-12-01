@@ -46,67 +46,10 @@ const Shoppinglist = (props) => {
   const [boughtlist, setBoughtList] = React.useState(boughtInstState);
   const [grocery, setGrocery] = React.useState("");
   const [amount, setAmount] = React.useState('');
-  const [unit, setUnit] = React.useState("l");
+  const [unit, setUnit] = React.useState("");
   const [selIndex, setSelectedIndex] = React.useState(1)
-  const units = ["dl", "l", "g", "kg", "tsk"]
+  const units = ["dl", "", "l", "g", "kg", "tsk"]
  
-
-
-  const recipie =
-  {
-    carbonara:
-      [
-        {
-          grocery: "bacon",
-          amount: 100,
-          unit: "g",
-          showList: false
-        },
-        {
-          grocery: "milk",
-          amount: 1,
-          unit: "L",
-          showList: false
-        },
-        {
-          grocery: "smør",
-          amount: 1,
-          unit: "tsk",
-          showList: false
-        },
-        {
-          grocery: "løg, i tern",
-          amount: 1,
-          unit: "",
-          showList: false
-        },
-        {
-          grocery: "piskefløde",
-          amount: 1,
-          unit: "dl",
-          showList: false
-        },
-        {
-          grocery: "æg",
-          amount: 2,
-          unit: "",
-          showList: false
-        },
-        {
-          grocery: "parmesan",
-          amount: 50,
-          unit: "g",
-          showList: false
-        },
-        {
-          grocery: "sort peber, friskkværnet",
-          amount: null,
-          unit: "",
-          showList: false
-        },
-      ],
-  }
-
 
 
 
@@ -123,28 +66,18 @@ const Shoppinglist = (props) => {
     })
     
     if (List.length > 0) {
-      console.log("Updating list hihi")
-      console.log(List)
 
       if (index === null) { // If no specific index, then update all
-        console.log("updateFromNewValslist for every index")
         for (var k = 0; k < List.length; k++) {
-          console.log("Updating everything in list")
-          console.log(List[k])
 
           // Remove where vallist is empty or undefined
           List = List.filter(function (item, itemI) {
             return (item.valList !== undefined || item.valList.length > 0)
           })
-          console.log("List")
-          console.log(List)
 
           // If vList is empty then remove grocery
           if (List[k].valList === undefined || List[k].valList.length === 0) {
-            // console.log(List.splice(k, 1))
-            // List = List.splice(k, 1);
-            console.log("GOING TO REMMMMMMMMMM")
-            console.log(List[k])
+
             List = List.filter(function (item, itemI) {
               return itemI !== k
             })
@@ -161,8 +94,6 @@ const Shoppinglist = (props) => {
               // If the units in vallist are not the same as the main unit 
               if ((vList[i].unit.toLowerCase() != List[k].unit.toLowerCase())) {
                 // then convert the units to the main and add new amount
-                console.log("units are not the same")
-                //let newa = converter.volume(parseInt(vList[i].amount)).from(vList[i].unit.toLowerCase()).to(list[index].unit.toLowerCase()).value
                 let newa = convert(parseInt(vList[i].amount), vList[i].unit.toLowerCase()).to(List[index].unit.toLowerCase())
                 a = a + newa
 
@@ -180,7 +111,6 @@ const Shoppinglist = (props) => {
         }
 
       } else {
-        console.log("updateFromNewValslist for specific index")
         // Get vallist
         let vList = List[index].valList ? List[index].valList : []
         let a = 0
@@ -230,9 +160,7 @@ const Shoppinglist = (props) => {
   const handleStatusChange = (index: number) => {
     // When we check a checkbox in grocery list
     const value = props.list[index]
-    console.log("value")
-    console.log(value)
-
+   
     // Move value down to bought list
     setBoughtList(prevList => {
       return [{
@@ -263,41 +191,17 @@ const Shoppinglist = (props) => {
 
     // Go through list
     for (var k = 0; k < myList.length; k++) {
-      console.log("GOING TO REMOVE")
       // Get vallist
       let vList = myList[k].valList ? myList[k].valList : []
-      console.log(vList)
-      console.log("Resname")
-      console.log(recipieName)
-
+  
       myList[k].valList = myList[k].valList.filter(function (item, itemI) {
         return item.recipie.toLowerCase() !== recipieName.toLowerCase()
       })
-      console.log(myList)
 
-      //   // Go through vallist
-      //   for (var i = 0; i < vList.length; i++) {
-      //     if (vList[i].recipie.toLowerCase() === recipieName.toLowerCase()) { // If grocery comes from recipie
-      //       console.log("HEHEHHEEHHE")
-      //       console.log(myList[k].valList)
-      //       console.log(myList[k].valList.filter(function(item,itemI) { 
-      //         return itemI !== i
-      //       }))
-      //       myList[k].valList.filter(function(item,itemI) { 
-      //         return itemI !== i
-      //       })
-      //       // myList[k] = myList[k].valList.splice(i, 1) // Then remove grocery
-      //       console.log(myList)
-      //     }
-      //   }
     }
 
-    console.log("MYLIST AFTER DELETE FROM VALLIST")
-    console.log(myList)
-    // setList(myList)
+   
     let updatedList = updateFromNewValslistReturn(myList, null)
-    console.log(updatedList)
-    console.log("MYLIST AFTER UPDATE")
     props.setList(updatedList)
     // updateFromNewValslist(null) // Update grovery where we have removed
 
@@ -340,7 +244,7 @@ const Shoppinglist = (props) => {
 
 
   return (
-    <NativeBaseProvider>
+    <NativeBaseProvider >
       <Center w="100%">
         <Box w="100%" paddingLeft={"10%"} style={styles.recipieListStyles}>
           <Heading paddingBottom={3} mb="2" size="md" color="white">
@@ -379,7 +283,7 @@ const Shoppinglist = (props) => {
                       onPress={() => showSubGrocery(itemI)}>
                       {(item.amount ? item.amount + " " : "") + (item.unit ? item.unit + " " : "") + item.name}
                     </Text>
-                    <IconButton size="sm" colorScheme="white" onPress={() => handleDelete(itemI)} />
+                    <IconButton icon={<Icon name="close" size={15} color="white" />} size="sm" colorScheme="white" onPress={() => handleDelete(itemI)} />
                     {(item.showList && item.valList) ? item.valList.map((val, valI) =>
                       <Text width="100%" flexShrink={1} textAlign="left" mx="2" color="white"
                         onPress={() => handleStatusChange(itemI)}>
@@ -419,9 +323,6 @@ const Shoppinglist = (props) => {
               </VStack>
             </VStack>
           </Box>
-          <IconButton borderRadius="sm" variant="solid" onPress={() => { // Add icon
-            props.addrecipieToList(recipie)
-          }} ></IconButton>
         </Center>
       </ScrollView>
 
@@ -444,14 +345,14 @@ const Shoppinglist = (props) => {
             setSelectedIndex(selectedIndex)
             setUnit(data + "")
           }}
-          wrapperHeight={60}
+          wrapperHeight={55}
           wrapperWidth={250}
           wrapperColor='#FFFFFF'
           itemHeight={60}
           highlightColor='#d8d8d8'
           highlightBorderWidth={2}
         />
-        <IconButton borderRadius="sm" variant="solid" onPress={() => { // Add icon
+        <IconButton borderRadius="sm" variant="solid" icon={<Icon name="plus" size={12} color="white" />} onPress={() => { // Add icon
           props.addItem({ "grocery": grocery, "amount": 2, "unit": unit, recipie: "" });
           setGrocery("");
           setAmount('');
@@ -465,12 +366,6 @@ const Shoppinglist = (props) => {
   );
 };
 
-const navBar = StyleSheet.create({
-  bottomContainer: {
-    flex: 1,
-    justifyContent: 'flex-end',
-  }
-})
 
 const styles = StyleSheet.create({
   generalShoppinglistStyles: {
@@ -488,6 +383,9 @@ const styles = StyleSheet.create({
   },
   addItem: {
     backgroundColor: "#13131A",
+    paddingLeft: "10%",
+    paddingRight: "10%"
+
   },
   recipiebox: {
     borderWidth: 1,
