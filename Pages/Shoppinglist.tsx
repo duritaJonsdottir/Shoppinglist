@@ -10,20 +10,11 @@ import {
   View
 } from 'react-native';
 
-import { useState, useEffect } from 'react';
-import SelectDropdown from 'react-native-select-dropdown'
 import {
   Colors,
-  DebugInstructions,
-  Header,
-  LearnMoreLinks,
-  ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
-import { Button, Pressable, Input, IconButton, Checkbox, Box, VStack, HStack, Heading, Text, Center, useToast, NativeBaseProvider } from "native-base";
-// import { Feather, Entypo } from "@expo/vector-icons";
+import { Input, IconButton, Checkbox, Box, VStack, HStack, Heading, Text, Center, NativeBaseProvider } from "native-base";
 
-
-import { db } from "../firebase/config.js";
 const { convert } = require('convert');
 import ScrollPicker from 'react-native-wheel-scrollview-picker';
 // import { addrecipieToList } from '../helpers.js';
@@ -38,8 +29,6 @@ const Shoppinglist = (props) => {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
   };
 
-
-
   // Initialize 
   const boughtInstState: { name: string, unit: string, amount: number, showList: boolean, valList: { amount: number, unit: string, recipie: string }[] }[] = [];
   
@@ -49,11 +38,6 @@ const Shoppinglist = (props) => {
   const [unit, setUnit] = React.useState("");
   const [selIndex, setSelectedIndex] = React.useState(1)
   const units = ["dl", "", "l", "g", "kg", "tsk"]
- 
-
-
-
- 
 
 
   const updateFromNewValslistReturn = (inList: [], index: number) => {
@@ -301,7 +285,7 @@ const Shoppinglist = (props) => {
           </Box>
 
           {/* Bought list */}
-          <Box maxW="300" w="100%" paddingTop={30} paddingBottom={50}>
+          <Box w="100%" paddingLeft={"10%"} paddingTop={30} paddingBottom={50}>
             <Heading color="white" mb="2" size="md">
               Bought
             </Heading>
